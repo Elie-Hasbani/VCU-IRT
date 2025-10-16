@@ -1,5 +1,6 @@
 
-
+#ifndef VARIABLES_H
+#define VARIABLES_H
 enum Op_Mode {MODE_RUN, MODE_CHARGE};
 enum Pot_Mode {MODE_ONE_POT, MODE_TWO_POT};
 
@@ -38,6 +39,6 @@ class Variables
 
 };
 
-
+#endif
 
 

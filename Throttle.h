@@ -1,8 +1,14 @@
 
 
-#define POT_SLACK 200
+
 #include "variables.h"
 
+
+#ifndef THROTTLE_H
+#define THROTTLE_H 
+
+
+#define POT_SLACK 200
 class Throttle
 {
 public:
@@ -11,7 +17,7 @@ public:
     static bool CheckAndLimitRange(int* potval, int potidx);
     static void setMinpot(int pot1min, int pot2min);
     static void setMaxpot(int pot1max, int pot2max);
-    static float CalcThrottle(int potval, int potIdx, bool brkpedal);
+    float CalcThrottle(int potval, int potIdx, bool brkpedal);
     Throttle(Variables * variables);
 
 
@@ -55,3 +61,5 @@ public:
         static float AveragePos(float Pos);
 
 };
+
+#endif

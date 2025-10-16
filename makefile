@@ -14,7 +14,7 @@ all: $(TARGET)
 # --- Lien final ---
 $(TARGET): $(OBJ)
 	@if [ -z "$(OBJ)" ]; then \
-		echo "❌ Aucun fichier .cpp trouvé dans le dossier courant."; \
+		echo "Aucun fichier .cpp trouvé dans le dossier courant."; \
 		exit 1; \
 	fi
 	@mkdir -p $(TARGET_DIR)
@@ -30,7 +30,7 @@ $(TARGET_DIR)/%.o: %.cpp
 # --- Nettoyage ---
 clean:
 	rm -rf $(TARGET_DIR)
-	@echo "🧹 Cleaned."
+	@echo "Cleaned."
 
 # --- Exécution rapide ---
 run: all

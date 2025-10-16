@@ -1,12 +1,13 @@
 #include <cstdint>
 
-
+#ifndef UTILS_H
+#define UTILS_H
 class utils
 {
 public:
     //VCU();
     uint16_t ProcessThrottle(uint16_t prevSpeed);
-    float utils::GetUserThrottleCommand();
+    float GetUserThrottleCommand();
 
     inline static int32_t change(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)
     {
@@ -25,3 +26,5 @@ public:
 
 
 };
+
+#endif
