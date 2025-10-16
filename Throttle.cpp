@@ -3,6 +3,40 @@
 #include "my_math.h"
 #include "utils.h"
 
+Variables * Throttle::variables;
+
+int Throttle::potmin[2]; 
+int Throttle::potmax[2];
+float Throttle::regenRpm;
+float Throttle::regenendRpm;
+float Throttle::brknompedal;
+float Throttle::regenmax;
+float Throttle::regenBrake;
+float Throttle::brkcruise;
+int Throttle::idleSpeed;
+int Throttle::cruiseSpeed;
+float Throttle::speedkp;
+int Throttle::speedflt;
+int Throttle::speedFiltered;   //Lissage de la vitesse pour regen/throttle
+float Throttle::idleThrotLim;
+float Throttle::potnomFiltered;
+float Throttle::throtmax;
+float Throttle::throtmaxRev;
+float Throttle::throtmin;
+float Throttle::throtdead;
+float Throttle::regenRamp;
+float Throttle::throttleRamp;
+float Throttle::udcmin;
+float Throttle::udcmax;
+float Throttle::idcmin;
+float Throttle::idcmax;
+int Throttle::speedLimit;
+float Throttle::ThrotRpmFilt;
+float UDCres;
+float IDCres;
+float UDCprevspnt = 0;
+float IDCprevspnt = 0;
+
 static float throttleRamped = 0.0;
 static float SpeedFiltered = 0.0; //Limitation de la vitesse max
 
@@ -17,10 +51,6 @@ static float PedalPosArr[PedalPosArrLen];
 static uint8_t PedalPosIdx = 0;
 static int8_t PedalReq = 0; //positive is accel negative is decell
 
-Throttle::Throttle(Variables * variables){
-
-    this -> variables = variables;
-}
 
 bool Throttle::CheckAndLimitRange(int* potval, int potIdx){
     // The range check accounts for inverted throttle pedals, where the minimum
@@ -149,7 +179,7 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 
 //!! pedal command intent coding
 
-    PedalPos = potnom; //save comparison next time to check if pedal had moved
+    /*PedalPos = potnom; //save comparison next time to check if pedal had moved
 
     float TempAvgPos = AveragePos(PedalPos); //get an rolling average pedal position over the last 50 measurements for smoothing
 
@@ -167,7 +197,7 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
     else//pedal not changed
     {
         potnom = TempAvgPos; //use the averaged pedal
-    }
+    }*/
 
 
     //Do clever bits for regen and such.

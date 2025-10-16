@@ -17,11 +17,11 @@ public:
     static bool CheckAndLimitRange(int* potval, int potidx);
     static void setMinpot(int pot1min, int pot2min);
     static void setMaxpot(int pot1max, int pot2max);
-    float CalcThrottle(int potval, int potIdx, bool brkpedal);
+    static float CalcThrottle(int potval, int potIdx, bool brkpedal);
     Throttle(Variables * variables);
 
 
-    Variables * variables;
+    static Variables * variables;
 
 
     static int potmin[2];

@@ -3,9 +3,11 @@
 class VCU
 {
     public:
-        //VCU();
+        void init();
         void Task10ms();
     
+    private:
+        void init_throttle();
 
 
 
