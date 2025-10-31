@@ -22,6 +22,8 @@ public:
     static void UdcLimitCommand(float& finalSpnt, float udc);
     static void IdcLimitCommand(float& finalSpnt, float idc);
     static void SpeedLimitCommand(float& finalSpnt, int speed);
+    static bool TemperatureDerate(float tmp, float tmpMax, float& finalSpnt);
+
     Throttle(Variables * variables);
 
 
@@ -59,7 +61,7 @@ public:
     static float ThrotRpmFilt;
 
     private:
-        static int speedFiltered;
+        //static int speedFiltered;
         static float potnomFiltered;
         static float brkRamped;
         static float AveragePos(float Pos);

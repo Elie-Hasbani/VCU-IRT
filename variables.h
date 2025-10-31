@@ -12,6 +12,8 @@ enum Pot_Mode {MODE_ONE_POT, MODE_TWO_POT};
 #define BRAKE 2
 #define OP_MODE 3
 #define POT_MODE 4
+#define DERATE_REASON 5
+
 
 
 
@@ -19,11 +21,19 @@ enum Pot_Mode {MODE_ONE_POT, MODE_TWO_POT};
 //floats
 #define POT1 0
 #define POT2 1
+#define INVERTER_TEMP 2
+#define MOTOR_TEMP 3
+#define INVERTER_TEMP_MAX 4
+#define MOTOR_TEMP_MAX 5
+#define POTNOM 6
 
 
 class Variables
 {
     friend class VCU;
+    friend class utils;
+    friend class Throttle;
+
     public:
     int getInt(int index);
     float getFloat(int index);

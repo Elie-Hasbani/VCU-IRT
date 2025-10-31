@@ -17,7 +17,7 @@ int Throttle::idleSpeed;
 int Throttle::cruiseSpeed;
 float Throttle::speedkp;
 int Throttle::speedflt;
-int Throttle::speedFiltered;   //Lissage de la vitesse pour regen/throttle
+//int Throttle::speedFiltered;   //Lissage de la vitesse pour regen/throttle
 float Throttle::idleThrotLim;
 float Throttle::potnomFiltered;
 float Throttle::throtmax;
@@ -38,7 +38,7 @@ float UDCprevspnt = 0;
 float IDCprevspnt = 0;
 
 static float throttleRamped = 0.0;
-static float SpeedFiltered = 0.0; //Limitation de la vitesse max
+static float SpeedFiltered = 0.0; //limitation des saut de vitesse
 
 static float regenlim =0;
 
@@ -338,4 +338,28 @@ void Throttle::SpeedLimitCommand(float& finalSpnt, int speed)
         res = MAX(0, res);              // Never allow negative (no throttle if over speed limit)
         finalSpnt = MIN(res, finalSpnt);// Clamp driver’s request down to res if necessary
     }
+}
+
+bool Throttle::TemperatureDerate(float temp, float tempMax, float& finalSpnt)
+{
+    uint16_t DerateReason = variables->getInt(DERATE_REASON);
+    float limit = 0;
+
+    if (temp <= tempMax)
+    {
+        limit = 100.0f;
+    }
+    else if (temp < (tempMax + 2.0f))
+    {
+        limit = 50.0f;
+        DerateReason |= 16;
+        variables->setInt(DERATE_REASON,DerateReason);
+    }
+
+    if (finalSpnt >= 0)
+        finalSpnt = MIN(finalSpnt, limit);
+    else
+        finalSpnt = MAX(finalSpnt, -limit);
+
+    return limit < 100.0f;
 }

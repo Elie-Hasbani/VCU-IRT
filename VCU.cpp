@@ -36,6 +36,9 @@ void VCU::Task10ms(){
     cout<<utils::GetUserThrottleCommand()<<"\n";
     cout<<utils::GetUserThrottleCommand()<<"\n";
 
+    //TODOS
+    //update speed for next iteration
+    //update temprature for next iteration
 
 
 

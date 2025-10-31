@@ -105,7 +105,7 @@ float utils::GetUserThrottleCommand(){
 }
 
 
-float ProcessThrottle(int speed)
+float utils::ProcessThrottle(uint16_t speed)
 {
     float finalSpnt;
 
@@ -121,34 +121,22 @@ float ProcessThrottle(int speed)
 
     finalSpnt = utils::GetUserThrottleCommand();
 
-    /* No Cruise allowed
-    if (Param::Get(Param::cruisespeed) > 0)
-    {
-        Throttle::brkcruise = 0;
-        Throttle::speedflt = 5;
-        Throttle::speedkp = 0.25f;
-        Throttle::cruiseSpeed = Param::GetInt(Param::cruisespeed);
-        float cruiseThrottle = Throttle::CalcCruiseSpeed(ABS(Param::GetInt(Param::speed)));
-        finalSpnt = MAX(cruiseThrottle, finalSpnt);
-    }
-*/
-    //finalSpnt = Throttle::RampThrottle(finalSpnt); //OLD - Throttle ramping reorganised in V2.30A
 
     //Throttle::UdcLimitCommand(finalSpnt,Param::GetFloat(Param::udc));
     //Throttle::IdcLimitCommand(finalSpnt, ABS(Param::GetFloat(Param::idc)));
     Throttle::SpeedLimitCommand(finalSpnt, ABS(speed));
-
-    /*if (Throttle::TemperatureDerate(Param::Get(Param::tmphs), Param::Get(Param::tmphsmax), finalSpnt))
+    
+    if (Throttle::TemperatureDerate(variables->getFloat(INVERTER_TEMP), variables->getFloat(INVERTER_TEMP_MAX), finalSpnt))
     {
-        ErrorMessage::Post(ERR_TMPHSMAX);
+        cout<<"inverter temp high";
     }
 
-    if (Throttle::TemperatureDerate(Param::Get(Param::tmpm), Param::Get(Param::tmpmmax), finalSpnt))
+    if (Throttle::TemperatureDerate(variables->getFloat(MOTOR_TEMP), variables->getFloat(MOTOR_TEMP_MAX), finalSpnt))
     {
-        ErrorMessage::Post(ERR_TMPMMAX);
+        cout<<"motor temp high";
     }
 
-    finalSpnt = Throttle::RampThrottle(finalSpnt); //Move ramping as last step -intro V2.30A
+    //finalSpnt = Throttle::RampThrottle(finalSpnt); //Move ramping as last step -intro V2.30A
 
     // make sure the torque percentage is NEVER out of range
     if (finalSpnt < -100.0f)
@@ -156,7 +144,7 @@ float ProcessThrottle(int speed)
     else if (finalSpnt > 100.0f)
         finalSpnt = 100.0f;
 
-    Param::SetFloat(Param::potnom, finalSpnt);*/
+    variables->setFloat(POTNOM, finalSpnt);
 
     return finalSpnt;
 }
