@@ -2,20 +2,40 @@
 #include "variables.h"
 #include "Throttle.h"
 #include <iostream>
+#include <cassert>
+#include "utils.h"
+#include "FileParser.h"
 
 using namespace std;
 
 Variables * variables;
+FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
+
 
 void VCU::Task10ms(){
-    cout<<"ok0\n";
-    cout<< "ok1\n";
+    cout<<"started Task10ms\n";
     variables->setInt(SPEED, 5);
     variables->setInt(DIRECTION, 1);
 
 
     cout<< (variables -> getInt(SPEED))<<"\n";
-    cout<< Throttle::CalcThrottle(2000,1,0)<<"\n";
+
+
+    cout<<"-----------Throttle test set 1-------------\n";
+    int potval = 1900;
+    float expected_value = 46.2943;
+    cout<<"expected value with potval="<<potval<< " is "<<expected_value<<"\n";
+    float actual_value = Throttle::CalcThrottle(potval,0,0);
+    cout<<"actual computed value is "<< actual_value<<"\n\n";
+    //assert(expected_value == actual_value);
+    //printf("test passed");
+
+
+    cout<<"-----------Throttle test set 1-------------\n";
+
+    cout<<utils::GetUserThrottleCommand()<<"\n";
+    cout<<utils::GetUserThrottleCommand()<<"\n";
+
 
 
 
@@ -23,19 +43,27 @@ void VCU::Task10ms(){
 
 void VCU::init(){
     variables = new Variables;
-    init_throttle();
+    init_throttle_test_set_1();
+    init_utils();
 
 
 
 
 }
 
+void VCU::init_utils(){
+    utils::variables = variables;
+    utils::parser = &parser;
 
-void VCU::init_throttle(){
+
+}
+
+
+void VCU::init_throttle_test_set_1(){
     Throttle::variables = variables;
 
     Throttle::potmin[0]        = 100;   // ADC raw min for pedal sensors
-    Throttle::potmin[1]        = 200;   // ADC raw min for pedal sensors
+    Throttle::potmin[1]        = 100;   // ADC raw min for pedal sensors
     Throttle::potmax[0]        = 3900; // ADC raw max for pedal se
     Throttle::potmax[1]        = 3900; // ADC raw max for pedal se
 

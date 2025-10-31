@@ -34,8 +34,8 @@ class Variables
     Variables();
     int * intValues;
     float * floatValues;
-    int nbIntVar = 5;
-    int nbFloatVar = 5;
+    int nbIntVar = 10;
+    int nbFloatVar = 10;
 
 };
 

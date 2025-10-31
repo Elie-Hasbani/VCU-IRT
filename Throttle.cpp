@@ -56,8 +56,8 @@ bool Throttle::CheckAndLimitRange(int* potval, int potIdx){
     // The range check accounts for inverted throttle pedals, where the minimum
     // value is higher than the maximum. To accomodate for that, the potMin and potMax
     // variables are set for internal use.
-    int potMin = potmax[potIdx] > potmin[potIdx] ? potmin[potIdx] : potmax[potIdx];
-    int potMax = potmax[potIdx] > potmin[potIdx] ? potmax[potIdx] : potmin[potIdx]; ///replace this for our usecase
+    int potMin = potmin[potIdx];
+    int potMax = potmax[potIdx]; 
 
     if (((*potval + POT_SLACK) < potMin) || (*potval > (potMax + POT_SLACK)))
     {
@@ -225,16 +225,117 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
         potnom = utils::changeFloat(potnom,0,100,regenlim*10,throtmax*10);
         potnom *= 0.1;
     }
-    /*else //Reverse, as neutral already exited function
-    {
-        if(Param::GetInt(Param::revRegen) == 0)//If regen in reverse is to be off
-        {
-            regenlim = 0;
-        }
-        potnom = utils::changeFloat(potnom,0,100,regenlim*10,throtmaxRev*10);
-        potnom *= 0.1;
-    }*/
 
     LastPedalPos = PedalPos; //Save current pedal position for next loop. //inutilisé
     return potnom;
+}
+
+
+
+
+
+
+
+
+
+
+/*void Throttle::UdcLimitCommand(float& finalSpnt, float udc)
+{
+    udcmin = Param::GetFloat(Param::udcmin);//Made dynamic
+    udcmax = Param::GetFloat(Param::udclim);
+
+    uint16_t DerateReason = Param::GetInt(Param::TorqDerate);
+
+    if(udcmin>0)    //ignore if set to zero. useful for bench testing without isa shunt
+    {
+        if (finalSpnt >= 0) //if we are requesting torque
+        {
+            float udcErr = udc - udcmin;
+            UDCres = udcErr * 3.5; // error multiplied by
+            UDCres = MAX(0, UDCres); // only allow positive UDCres limit
+            if(finalSpnt > UDCres) //derate on udcmin
+            {
+                DerateReason |= 1;
+                Param::SetInt(Param::TorqDerate,DerateReason);
+            }
+            finalSpnt = MIN(finalSpnt, UDCres);
+        }
+        else
+        {
+            float udcErr = udc - udcmax;
+            UDCres = udcErr * 3.5;
+            UDCres = MIN(0, UDCres);
+            if(finalSpnt < UDCres)//derate on udcmax
+            {
+                DerateReason |= 2;
+                Param::SetInt(Param::TorqDerate,DerateReason);
+            }
+            finalSpnt = MAX(finalSpnt, UDCres);
+
+        }
+    }
+    else
+    {
+        finalSpnt = finalSpnt;
+    }
+}
+
+void Throttle::IdcLimitCommand(float& finalSpnt, float idc)
+{
+    static float idcFiltered = 0;
+    idcFiltered = IIRFILTERF(idcFiltered, idc, 4);
+
+    idcmax = Param::GetFloat(Param::idcmax);//Made dynamic
+    idcmin = Param::GetFloat(Param::idcmin);
+
+    uint16_t DerateReason = Param::GetInt(Param::TorqDerate);
+
+    if(idcmax>0)    //ignore if set to zero. useful for bench testing without isa shunt
+    {
+        if (finalSpnt >= 0)
+        {
+            float idcerr = idcmax - idcFiltered;
+            IDCres = idcerr * 1;//gain needs tuning
+            IDCres = MAX(0, IDCres);
+            if(finalSpnt > IDCres)//derate on idcmax
+            {
+                DerateReason |= 8;
+                Param::SetInt(Param::TorqDerate,DerateReason);
+            }
+            finalSpnt = MIN(finalSpnt, IDCres);
+        }
+        else
+        {
+
+            float idcerr = idcmin + idcFiltered;
+            IDCres = idcerr * 1;//gain needs tuning
+            IDCres = MIN(0, IDCres);
+            if(finalSpnt < IDCres)//derate on idcmin
+            {
+                DerateReason |= 4;
+                Param::SetInt(Param::TorqDerate,DerateReason);
+            }
+            finalSpnt = MAX(finalSpnt, IDCres);
+        }
+    }
+    else
+    {
+        finalSpnt = finalSpnt;
+    }
+}*/
+
+void Throttle::SpeedLimitCommand(float& finalSpnt, int speed)
+{
+    static int speedFiltered = 0;
+
+    speedFiltered = IIRFILTER(speedFiltered, speed, 4);
+
+    if (finalSpnt > 0)// Only limit if driver is asking for positive torque (acceleration)
+    {
+        int speederr = speedLimit - speedFiltered;// How far below the speed limit we are
+        int res = speederr / 4;                   // Scale the error down
+
+        res = MAX(0, res);              // Never allow negative (no throttle if over speed limit)
+        finalSpnt = MIN(res, finalSpnt);// Clamp driver’s request down to res if necessary
+    }
 }

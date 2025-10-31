@@ -18,6 +18,10 @@ public:
     static void setMinpot(int pot1min, int pot2min);
     static void setMaxpot(int pot1max, int pot2max);
     static float CalcThrottle(int potval, int potIdx, bool brkpedal);
+
+    static void UdcLimitCommand(float& finalSpnt, float udc);
+    static void IdcLimitCommand(float& finalSpnt, float idc);
+    static void SpeedLimitCommand(float& finalSpnt, int speed);
     Throttle(Variables * variables);
 
 
