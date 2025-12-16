@@ -5,9 +5,9 @@
 class Inverter
 {
 public:
-    int getMotorSpeed() { return 1000; };
+    int getMotorSpeed() { return speed; };
     void setTorque();
-    void DecodeCanMessage(int id, uint32_t *data);
+    void DecodeCanMessage(int id, uint32_t data[2]);
 
 private:
     int16_t inv_temp;

@@ -5,10 +5,12 @@
 #include <cassert>
 #include "utils.h"
 #include "FileParser.h"
+#include "Inverter.h"
 
 using namespace std;
 
 Variables *variables;
+Inverter *inverter;
 FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
 
 void VCU::Task10ms()
@@ -38,8 +40,9 @@ void VCU::Task10ms()
     // update temprature for next iteration(get itfrom motor and inverter)
 }
 
-void VCU::receiveCanCallback(uint32_t id, uint32_t data, uint8_t length)
+void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
 {
+    inverter->DecodeCanMessage(id, data);
 }
 
 void VCU::init()
@@ -47,6 +50,8 @@ void VCU::init()
     variables = new Variables;
     init_throttle_test_set_1();
     init_utils();
+
+    inverter = new Inverter();
 }
 
 void VCU::init_utils()

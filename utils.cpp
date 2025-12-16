@@ -20,6 +20,7 @@ float utils::GetUserThrottleCommand()
     parser->readPotVal2(v2);
     std::cout << "potval1 = " << v1 << ", potval2 = " << v2 << endl;
 
+    ////potval are analog values read from the throttle potentiometers
     int pot1val = v1;
     int pot2val = v2;
     // Param::SetInt(Param::pot, pot1val);
@@ -39,6 +40,7 @@ float utils::GetUserThrottleCommand()
         float pot1nomTmp = Throttle::NormalizeThrottle(pot1val, 0);
         float pot2nomTmp = Throttle::NormalizeThrottle(pot2val, 1);
 
+        // potential limp mode if the two throttle values differ too much
         if (ABS(pot2nomTmp - pot1nomTmp) > 10.0f)
         {
             printf("too much difference\n");
