@@ -7,10 +7,16 @@
 #include "FileParser.h"
 #include "Inverter.h"
 
+#include "DigSigMonitor.h"
+#include "DigSignal.h"
+
+#include "init.h"
+
 using namespace std;
 
 Variables *variables;
 Inverter *inverter;
+FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
 FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
 
 void VCU::Task10ms()
@@ -47,6 +53,8 @@ void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
 
 void VCU::init()
 {
+    init::createAndAddSignals();
+
     variables = new Variables;
     init_throttle_test_set_1();
     init_utils();

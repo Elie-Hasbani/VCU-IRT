@@ -1,22 +1,24 @@
 #ifndef SIGNAL_PROCESSING_H
 #define SIGNAL_PROCESSING_H
 
-#include "Signal.h"
+#include "DigSignal.h"
 #include "project_config.h"
-class DigitalSignalProcessing
+class DigSigMonitor
 {
 public:
     static bool checkDigSignals1ms(); // to be called periodically
 
-    void add1msSignal(Signal *signal)
+    static void add1msSignal(DigSignal *signal)
     {
         signals1ms[size1ms] = signal;
         ++size1ms;
     }
 
-    static Signal *signals1ms[MAX_1MS_DIG_INPUTS];
-    static Signal *signals10ms[MAX_10MS_DIG_INPUTS];
-    static Signal *signals100ms[MAX_100MS_DIG_INPUTS];
+    static DigSignal **get1msList() { return signals1ms; }
+
+    static DigSignal *signals1ms[MAX_1MS_DIG_INPUTS];
+    static DigSignal *signals10ms[MAX_10MS_DIG_INPUTS];
+    static DigSignal *signals100ms[MAX_100MS_DIG_INPUTS];
 
     static int size1ms;
     static int size10ms;

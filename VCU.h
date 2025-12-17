@@ -1,5 +1,15 @@
 
 #include <stdint.h>
+#include "DigSignal.h"
+
+static DigSignal TSMS;
+static DigSignal IMD;
+static DigSignal BSPD;
+
+static DigSignal *selectedTSMS = &TSMS;
+static DigSignal *selectedIMD = &IMD;
+static DigSignal *selectedBSPD = &BSPD;
+
 class VCU
 {
 public:

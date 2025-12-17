@@ -1,18 +1,19 @@
 #include <cstdint>
-#ifndef SIGNAL_H
-#define SIGNAL_H
+#ifndef DIG_SIGNAL_H
+#define DIG_SIGNAL_H
 
 // typedef void (*CallBack)();
 
-class Signal
+class DigSignal
 {
 public:
+    friend class DigSigMonitor;
     // digio object
     //
     // Signal(/*digio object,*/ CallBack cbHigh, void (*cbLow)()) : CallBackHigh(cbHigh), CallBackLow(cbLow) {};
     // void HandleHigh() { CallBackHigh(); }
     // void HandleLow() { CallBackLow(); };
-    void getSignal();
+    bool getSignal() { return 0; };
 
 private:
     // digio object
@@ -20,6 +21,7 @@ private:
     // CallBack CallBackHigh;
     // CallBack CallBackLow;
     bool state;
+    void setState(bool state) { this->state = state; }
     uint32_t time_stamp;
 };
 
