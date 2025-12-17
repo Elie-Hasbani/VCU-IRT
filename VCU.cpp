@@ -17,7 +17,6 @@ using namespace std;
 Variables *variables;
 Inverter *inverter;
 FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
-FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
 
 void VCU::Task10ms()
 {
@@ -44,6 +43,10 @@ void VCU::Task10ms()
     // TODOS
     // update speed for next iteration(get speed form inverter class)
     // update temprature for next iteration(get itfrom motor and inverter)
+
+    DigSigMonitor::checkDigSignals1ms();
+    printf("checked dig signals\n");
+    printf(selectedTSMS->getSignal() ? "TSMS HIGH\n" : "TSMS LOW\n");
 }
 
 void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)

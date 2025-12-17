@@ -1,6 +1,11 @@
 #include "DigSigMonitor.h"
+#include "DigSignal.h"
+#include <cstdio>
 
-bool DigSigMonitor::checkDigSignals1ms()
+DigSignal *DigSigMonitor::signals1ms[MAX_1MS_DIG_INPUTS] = {nullptr};
+int DigSigMonitor::size1ms = 0;
+
+void DigSigMonitor::checkDigSignals1ms()
 {
     for (int i = 0; i < size1ms; ++i)
     {

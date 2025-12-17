@@ -6,7 +6,7 @@
 class DigSigMonitor
 {
 public:
-    static bool checkDigSignals1ms(); // to be called periodically
+    static void checkDigSignals1ms(); // to be called periodically
 
     static void add1msSignal(DigSignal *signal)
     {

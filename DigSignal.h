@@ -13,7 +13,8 @@ public:
     // Signal(/*digio object,*/ CallBack cbHigh, void (*cbLow)()) : CallBackHigh(cbHigh), CallBackLow(cbLow) {};
     // void HandleHigh() { CallBackHigh(); }
     // void HandleLow() { CallBackLow(); };
-    bool getSignal() { return 0; };
+    bool getSignal() { return 1; };
+    bool getState() { return state; };
 
 private:
     // digio object
