@@ -10,12 +10,20 @@
 #include "DigSigMonitor.h"
 #include "DigSignal.h"
 
-#include "init.h"
-
 using namespace std;
 
+static Inverter inverter;
+static Inverter *selectedInverter = &inverter;
+
+static DigSignal TSMS;
+static DigSignal IMD;
+static DigSignal BSPD;
+
+static DigSignal *selectedTSMS = &TSMS;
+static DigSignal *selectedIMD = &IMD;
+static DigSignal *selectedBSPD = &BSPD;
+
 Variables *variables;
-Inverter *inverter;
 FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
 
 void VCU::Task10ms()
@@ -51,18 +59,23 @@ void VCU::Task10ms()
 
 void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
 {
-    inverter->DecodeCanMessage(id, data);
+    selectedInverter->DecodeCanMessage(id, data);
+}
+
+void VCU::createAndAddSignals()
+{
+    DigSigMonitor::add1msSignal(selectedTSMS);
+    DigSigMonitor::add1msSignal(selectedIMD);
+    DigSigMonitor::add1msSignal(selectedBSPD);
 }
 
 void VCU::init()
 {
-    init::createAndAddSignals();
+    createAndAddSignals();
 
     variables = new Variables;
     init_throttle_test_set_1();
     init_utils();
-
-    inverter = new Inverter();
 }
 
 void VCU::init_utils()
