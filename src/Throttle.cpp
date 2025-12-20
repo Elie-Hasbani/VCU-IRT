@@ -3,8 +3,6 @@
 #include "my_math.h"
 #include "utils.h"
 
-Variables *Throttle::variables;
-
 int Throttle::potmin[2];
 int Throttle::potmax[2];
 float Throttle::regenRpm;
@@ -104,8 +102,8 @@ float Throttle::NormalizeThrottle(int potval, int potIdx)
  */
 float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 {
-    int speed = variables->getInt(SPEED);
-    int dir = variables->getInt(DIRECTION);
+    int speed = Variables::getInt(SPEED);
+    int dir = Variables::getInt(DIRECTION);
     float potnom = 0.0f; // normalize potval against the potmin and potmax values
 
     if (speed < 0) // make sure speed is not negative
@@ -328,7 +326,7 @@ void Throttle::SpeedLimitCommand(float &finalSpnt, int speed)
 
 bool Throttle::TemperatureDerate(float temp, float tempMax, float &finalSpnt)
 {
-    uint16_t DerateReason = variables->getInt(DERATE_REASON);
+    uint16_t DerateReason = Variables::getInt(DERATE_REASON);
     float limit = 0;
 
     if (temp <= tempMax) // temperature low, allow full request
@@ -339,7 +337,7 @@ bool Throttle::TemperatureDerate(float temp, float tempMax, float &finalSpnt)
     {
         limit = 50.0f;
         DerateReason |= 16;
-        variables->setInt(DERATE_REASON, DerateReason);
+        Variables::setInt(DERATE_REASON, DerateReason);
     } // else temp way too high and limit = 0
 
     if (finalSpnt >= 0)

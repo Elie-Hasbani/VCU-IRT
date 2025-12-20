@@ -12,7 +12,7 @@ public:
     void init();
     void Task10ms();
     void receiveCanCallback(uint32_t id, uint32_t data[32], uint8_t length);
-    void createAndAddSignals();
+    void AddSignalsToQueue();
 
 private:
     void init_throttle_test_set_1();

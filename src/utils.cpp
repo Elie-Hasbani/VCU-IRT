@@ -6,14 +6,12 @@
 
 using namespace std;
 
-Variables *utils::variables;
 FileParser *utils::parser;
 
 float utils::GetUserThrottleCommand()
 {
-    bool brake = variables->getInt(BRAKE);
-    int potMode = variables->getInt(POT_MODE);
-    int direction = variables->getInt(DIRECTION);
+    bool brake = Variables::getInt(BRAKE);
+    int direction = Variables::getInt(DIRECTION);
 
     int v1, v2;
     parser->readPotVal1(v1);
@@ -122,12 +120,12 @@ float utils::ProcessThrottle(uint16_t speed)
     // Throttle::IdcLimitCommand(finalSpnt, ABS(Param::GetFloat(Param::idc)));
     Throttle::SpeedLimitCommand(finalSpnt, ABS(speed));
 
-    if (Throttle::TemperatureDerate(variables->getFloat(INVERTER_TEMP), variables->getFloat(INVERTER_TEMP_MAX), finalSpnt))
+    if (Throttle::TemperatureDerate(Variables::getFloat(INVERTER_TEMP), Variables::getFloat(INVERTER_TEMP_MAX), finalSpnt))
     {
         cout << "inverter temp high";
     }
 
-    if (Throttle::TemperatureDerate(variables->getFloat(MOTOR_TEMP), variables->getFloat(MOTOR_TEMP_MAX), finalSpnt))
+    if (Throttle::TemperatureDerate(Variables::getFloat(MOTOR_TEMP), Variables::getFloat(MOTOR_TEMP_MAX), finalSpnt))
     {
         cout << "motor temp high";
     }
@@ -140,7 +138,7 @@ float utils::ProcessThrottle(uint16_t speed)
     else if (finalSpnt > 100.0f)
         finalSpnt = 100.0f;
 
-    variables->setFloat(POTNOM, finalSpnt);
+    Variables::setFloat(POTNOM, finalSpnt);
 
     return finalSpnt;
 }

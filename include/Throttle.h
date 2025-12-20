@@ -1,34 +1,25 @@
 
 
-
 #include "variables.h"
 
-
 #ifndef THROTTLE_H
-#define THROTTLE_H 
-
+#define THROTTLE_H
 
 #define POT_SLACK 200
 class Throttle
 {
 public:
-    //VCU();
+    // VCU();
     static float NormalizeThrottle(int potval, int potIdx);
-    static bool CheckAndLimitRange(int* potval, int potidx);
+    static bool CheckAndLimitRange(int *potval, int potidx);
     static void setMinpot(int pot1min, int pot2min);
     static void setMaxpot(int pot1max, int pot2max);
     static float CalcThrottle(int potval, int potIdx, bool brkpedal);
 
-    static void UdcLimitCommand(float& finalSpnt, float udc);
-    static void IdcLimitCommand(float& finalSpnt, float idc);
-    static void SpeedLimitCommand(float& finalSpnt, int speed);
-    static bool TemperatureDerate(float tmp, float tmpMax, float& finalSpnt);
-
-    Throttle(Variables * variables);
-
-
-    static Variables * variables;
-
+    static void UdcLimitCommand(float &finalSpnt, float udc);
+    static void IdcLimitCommand(float &finalSpnt, float idc);
+    static void SpeedLimitCommand(float &finalSpnt, int speed);
+    static bool TemperatureDerate(float tmp, float tmpMax, float &finalSpnt);
 
     static int potmin[2];
     static int potmax[2];
@@ -60,12 +51,11 @@ public:
     static float regenendRpm;
     static float ThrotRpmFilt;
 
-    private:
-        //static int speedFiltered;
-        static float potnomFiltered;
-        static float brkRamped;
-        static float AveragePos(float Pos);
-
+private:
+    // static int speedFiltered;
+    static float potnomFiltered;
+    static float brkRamped;
+    static float AveragePos(float Pos);
 };
 
 #endif

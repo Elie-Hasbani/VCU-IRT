@@ -31,22 +31,18 @@ enum Pot_Mode
 
 class Variables
 {
-    friend class VCU;
-    friend class utils;
-    friend class Throttle;
-
 public:
-    int getInt(int index);
-    float getFloat(int index);
+    static void init();
+    static int getInt(int index);
+    static float getFloat(int index);
+    static void setInt(int index, int value);
+    static void setFloat(int index, float value);
 
 private:
-    void setInt(int index, int value) { intValues[index] = value; };
-    void setFloat(int index, float value) { floatValues[index] = value; };
-    Variables();
-    int *intValues;
-    float *floatValues;
-    int nbIntVar = 10;
-    int nbFloatVar = 10;
+    static int intValues[10];
+    static float floatValues[10];
+    static const int nbIntVar = 10;
+    static const int nbFloatVar = 10;
 };
 
 #endif

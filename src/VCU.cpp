@@ -49,13 +49,12 @@ static DigSignal *selectedR2D = &R2D;
 
 #endif
 
-Variables *variables;
 FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/dataPot.csv");
 void VCU::init()
 {
-    createAndAddSignals();
+    AddSignalsToQueue();
 
-    variables = new Variables;
+    Variables::init();
     init_throttle_test_set_1();
     init_utils();
 }
@@ -63,10 +62,10 @@ void VCU::init()
 void VCU::Task10ms()
 {
     cout << "started Task10ms\n";
-    variables->setInt(SPEED, 5);
-    variables->setInt(DIRECTION, 1);
+    Variables::setInt(SPEED, 5);
+    Variables::setInt(DIRECTION, 1);
 
-    cout << (variables->getInt(SPEED)) << "\n";
+    cout << (Variables::getInt(SPEED)) << "\n";
 
     cout << "-----------Throttle test set 1-------------\n";
     int potval = 1900;
@@ -99,13 +98,15 @@ void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
     selectedInverter->DecodeCanMessage(id, data);
 }
 
-void VCU::createAndAddSignals()
+void VCU::AddSignalsToQueue()
 {
     DigSignal *signalmsToAdd[] = {selectedTSMS, selectedIMD, selectedBSPD};
-    addSignalsToMonitor("1ms", signalmsToAdd, 3);
+    char queue1ms[] = "1ms";
+    addSignalsToMonitor(queue1ms, signalmsToAdd, 3);
 
+    char queue10ms[] = "10ms";
     DigSignal *signal10msToAdd[] = {selectedR2D};
-    addSignalsToMonitor("10ms", signal10msToAdd, 1);
+    addSignalsToMonitor(queue10ms, signal10msToAdd, 1);
 }
 
 void VCU::addSignalsToMonitor(char *queue, DigSignal **signals, int count)
@@ -123,6 +124,11 @@ void VCU::addSignalsToMonitor(char *queue, DigSignal **signals, int count)
         printf("adding 10ms signals count:%d\n", count);
         addFunc = DigSigMonitor::add10msSignal;
     }
+    else
+    {
+        printf("Unknown queue: %s\n", queue);
+        return;
+    }
 
     for (int i = 0; i < count; ++i)
     {
@@ -132,14 +138,11 @@ void VCU::addSignalsToMonitor(char *queue, DigSignal **signals, int count)
 
 void VCU::init_utils()
 {
-    utils::variables = variables;
     utils::parser = &parser;
 }
 
 void VCU::init_throttle_test_set_1()
 {
-    Throttle::variables = variables;
-
     Throttle::potmin[0] = 100;  // ADC raw min for pedal sensors
     Throttle::potmin[1] = 100;  // ADC raw min for pedal sensors
     Throttle::potmax[0] = 3900; // ADC raw max for pedal se
