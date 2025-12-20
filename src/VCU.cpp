@@ -4,27 +4,61 @@
 #include <iostream>
 #include <cassert>
 #include "utils.h"
-#include "PotFileParser.h"
 #include "Inverter.h"
 
 #include "DigSigMonitor.h"
 #include "DigSignal.h"
+
+#include "PotFileParser.h"
+#include "DigFileParser.h"
+#include <cstring>
 
 using namespace std;
 
 static Inverter inverter;
 static Inverter *selectedInverter = &inverter;
 
-static DigSignal TSMS;
-static DigSignal IMD;
-static DigSignal BSPD;
+#ifdef TEST
+
+DigFileParser IMDParser("/home/ehasbani/IRT/VCU-IRT/data/DataIMD.csv");
+DigFileParser R2DParser("/home/ehasbani/IRT/VCU-IRT/data/DataR2D.csv");
+DigFileParser BSPDParser("/home/ehasbani/IRT/VCU-IRT/data/DataBSPD.csv");
+DigFileParser TSMSParser("/home/ehasbani/IRT/VCU-IRT/data/DataTSMS.csv");
+
+static DigSignal TSMS(&TSMSParser);
+static DigSignal IMD(&IMDParser);
+static DigSignal BSPD(&BSPDParser);
+static DigSignal R2D(&R2DParser);
 
 static DigSignal *selectedTSMS = &TSMS;
 static DigSignal *selectedIMD = &IMD;
 static DigSignal *selectedBSPD = &BSPD;
+static DigSignal *selectedR2D = &R2D;
+
+#else
+
+static DigSignal TSMS;
+static DigSignal IMD;
+static DigSignal BSPD;
+static DigSignal R2D;
+
+static DigSignal *selectedTSMS = &TSMS;
+static DigSignal *selectedIMD = &IMD;
+static DigSignal *selectedBSPD = &BSPD;
+static DigSignal *selectedR2D = &R2D;
+
+#endif
 
 Variables *variables;
 FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/dataPot.csv");
+void VCU::init()
+{
+    createAndAddSignals();
+
+    variables = new Variables;
+    init_throttle_test_set_1();
+    init_utils();
+}
 
 void VCU::Task10ms()
 {
@@ -53,8 +87,11 @@ void VCU::Task10ms()
     // update temprature for next iteration(get itfrom motor and inverter)
 
     DigSigMonitor::checkDigSignals1ms();
+    DigSigMonitor::checkDigSignals10ms();
     printf("checked dig signals\n");
-    printf(selectedTSMS->getSignal() ? "TSMS HIGH\n" : "TSMS LOW\n");
+
+    printf(selectedTSMS->getState() ? "TSMS HIGH\n" : "TSMS LOW\n");
+    printf(selectedR2D->getState() ? "R2D HIGH\n" : "R2D LOW\n");
 }
 
 void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
@@ -64,18 +101,33 @@ void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
 
 void VCU::createAndAddSignals()
 {
-    DigSigMonitor::add1msSignal(selectedTSMS);
-    DigSigMonitor::add1msSignal(selectedIMD);
-    DigSigMonitor::add1msSignal(selectedBSPD);
+    DigSignal *signalmsToAdd[] = {selectedTSMS, selectedIMD, selectedBSPD};
+    addSignalsToMonitor("1ms", signalmsToAdd, 3);
+
+    DigSignal *signal10msToAdd[] = {selectedR2D};
+    addSignalsToMonitor("10ms", signal10msToAdd, 1);
 }
 
-void VCU::init()
+void VCU::addSignalsToMonitor(char *queue, DigSignal **signals, int count)
 {
-    createAndAddSignals();
+    // add signals to the appropriate monitor queue based on the string
+    void (*addFunc)(DigSignal *);
 
-    variables = new Variables;
-    init_throttle_test_set_1();
-    init_utils();
+    if (!strcmp(queue, "1ms"))
+    {
+        printf("adding 1ms signals count:%d\n", count);
+        addFunc = DigSigMonitor::add1msSignal;
+    }
+    else if (!strcmp(queue, "10ms"))
+    {
+        printf("adding 10ms signals count:%d\n", count);
+        addFunc = DigSigMonitor::add10msSignal;
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        addFunc(signals[i]);
+    }
 }
 
 void VCU::init_utils()

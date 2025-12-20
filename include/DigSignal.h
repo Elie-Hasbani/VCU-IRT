@@ -3,6 +3,7 @@
 #define DIG_SIGNAL_H
 
 // typedef void (*CallBack)();
+#include "DigFileParser.h"
 
 class DigSignal
 {
@@ -13,8 +14,15 @@ public:
     // Signal(/*digio object,*/ CallBack cbHigh, void (*cbLow)()) : CallBackHigh(cbHigh), CallBackLow(cbLow) {};
     // void HandleHigh() { CallBackHigh(); }
     // void HandleLow() { CallBackLow(); };
-    bool getSignal() { return 1; };
-    bool getState() { return state; };
+    bool getState() { return state; }
+
+#ifdef TEST
+    void updateValue() { digParser->readNextEntry(this->state); }
+    DigSignal(DigFileParser *path) : digParser(path) {}
+    DigSignal() {}
+#else
+    void updateValue() { state = 0; }
+#endif
 
 private:
     // digio object
@@ -22,8 +30,8 @@ private:
     // CallBack CallBackHigh;
     // CallBack CallBackLow;
     bool state;
-    void setState(bool state) { this->state = state; }
     uint32_t time_stamp;
+    DigFileParser *digParser;
 };
 
 #endif // SIGNAL_H

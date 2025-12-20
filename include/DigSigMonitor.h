@@ -6,12 +6,19 @@
 class DigSigMonitor
 {
 public:
-    static void checkDigSignals1ms(); // to be called periodically
+    static void checkDigSignals1ms();  // to be called periodically
+    static void checkDigSignals10ms(); // to be called periodically
 
     static void add1msSignal(DigSignal *signal)
     {
         signals1ms[size1ms] = signal;
         ++size1ms;
+    }
+
+    static void add10msSignal(DigSignal *signal)
+    {
+        signals10ms[size10ms] = signal;
+        ++size10ms;
     }
 
     static DigSignal **get1msList() { return signals1ms; }
