@@ -1,14 +1,14 @@
 #include <cstdint>
 #include "variables.h"
 
-#include "FileParser.h"
+#include "PotFileParser.h"
 
 #ifndef UTILS_H
 #define UTILS_H
 class utils
 {
 public:
-    //VCU();
+    // VCU();
     static float ProcessThrottle(uint16_t speed);
     static float GetUserThrottleCommand();
 
@@ -22,17 +22,8 @@ public:
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    static Variables * variables;
-    static FileParser * parser;
-    
-    
-    
-
-        
-
-
-
-
+    static Variables *variables;
+    static FileParser *parser;
 };
 
 #endif

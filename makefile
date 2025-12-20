@@ -1,11 +1,17 @@
 # --- Configuration ---
-CXX      := g++
-CXXFLAGS := -Wall -Wextra -O2 -std=c++17
+CXX        := g++
+SRC_DIR    := src
+INC_DIR    := include
+PARSER_DIR := parsers
 TARGET_DIR := target
-TARGET := $(TARGET_DIR)/a.out
+TARGET     := $(TARGET_DIR)/a.out
+
+# Ajoute le dossier des headers à la recherche d'includes
+CXXFLAGS := -Wall -Wextra -O2 -std=c++17 -I$(INC_DIR) -I$(PARSER_DIR)
 
 # --- Détection automatique des fichiers .cpp ---
-SRC := $(wildcard *.cpp)
+VPATH := $(SRC_DIR) $(PARSER_DIR)
+SRC := $(notdir $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(PARSER_DIR)/*.cpp))
 OBJ := $(patsubst %.cpp,$(TARGET_DIR)/%.o,$(SRC))
 
 # --- Règle principale ---

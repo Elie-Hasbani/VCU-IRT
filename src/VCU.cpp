@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cassert>
 #include "utils.h"
-#include "FileParser.h"
+#include "PotFileParser.h"
 #include "Inverter.h"
 
 #include "DigSigMonitor.h"
@@ -24,7 +24,7 @@ static DigSignal *selectedIMD = &IMD;
 static DigSignal *selectedBSPD = &BSPD;
 
 Variables *variables;
-FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/data.csv");
+FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/dataPot.csv");
 
 void VCU::Task10ms()
 {
