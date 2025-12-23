@@ -67,17 +67,6 @@ void VCU::Task10ms()
 
     cout << (Variables::getInt(SPEED)) << "\n";
 
-    cout << "-----------Throttle test set 1-------------\n";
-    int potval = 1900;
-    float expected_value = 46.2943;
-    cout << "expected value with potval=" << potval << " is " << expected_value << "\n";
-    float actual_value = Throttle::CalcThrottle(potval, 0, 0);
-    cout << "actual computed value is " << actual_value << "\n\n";
-    // assert(expected_value == actual_value);
-    // printf("test passed");
-
-    cout << "-----------Throttle test set 1-------------\n";
-
     cout << utils::GetUserThrottleCommand() << "\n";
     cout << utils::GetUserThrottleCommand() << "\n";
 

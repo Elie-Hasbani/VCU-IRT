@@ -1,6 +1,11 @@
 #include "PotFileParser.h"
 #include <sstream>
 #include <iostream>
+#include <vector>
+
+/* =======================
+ *  Constructor / Destructor
+ * ======================= */
 
 FileParser::FileParser(const std::string &filename)
     : hasLine(false), pot1Read(false)
@@ -20,16 +25,50 @@ FileParser::~FileParser()
     }
 }
 
+/* =======================
+ *  Private helpers
+ * ======================= */
+
+static void trim(std::string &s)
+{
+    // Left trim
+    while (!s.empty() && (s.front() == ' ' || s.front() == '\t'))
+        s.erase(s.begin());
+
+    // Right trim
+    while (!s.empty() && (s.back() == ' ' || s.back() == '\t'))
+        s.pop_back();
+}
+
+/* =======================
+ *  Core logic
+ * ======================= */
+
 bool FileParser::readNextLine()
 {
-    if (!std::getline(file, currentLine))
+    std::string line;
+
+    while (std::getline(file, line))
     {
-        hasLine = false;
-        return false;
+        trim(line);
+
+        // Ignore empty lines
+        if (line.empty())
+            continue;
+
+        // Ignore comments
+        if (line[0] == '#')
+            continue;
+
+        // Valid line found
+        currentLine = line;
+        hasLine = true;
+        pot1Read = false;
+        return true;
     }
-    hasLine = true;
-    pot1Read = false;
-    return true;
+
+    hasLine = false;
+    return false;
 }
 
 bool FileParser::parseLine(int &pot1, int &pot2)
@@ -40,9 +79,11 @@ bool FileParser::parseLine(int &pot1, int &pot2)
 
     while (std::getline(ss, token, ';'))
     {
+        trim(token);
         parts.push_back(token);
     }
 
+    // Expected format: potval1;XXXX;potval2;YYYY
     if (parts.size() < 4)
         return false;
 
@@ -90,7 +131,7 @@ bool FileParser::readPotVal2(int &value)
 
     value = pot2;
 
-    // after reading pot2, we move to the next line for next call
+    // Move to next valid line for next cycle
     readNextLine();
     return true;
 }

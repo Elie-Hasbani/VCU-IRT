@@ -1,2 +1,16 @@
-potval1;1200;potval2;1300
-potval1;1500;potval2;1500
+potval1;1050;potval2;1070
+potval1;1250;potval2;1270
+potval1;1500;potval2;1520
+potval1;1800;potval2;1820
+potval1;2100;potval2;2120
+
+# ---- POTENTIOMETER FAULT (incoherent) ----
+potval1;2400;potval2;1800
+potval1;2500;potval2;1600
+
+# ---- DECELERATION ----
+potval1;2000;potval2;2020
+potval1;1600;potval2;1620
+potval1;1300;potval2;1320
+potval1;1100;potval2;1120
+potval1;1050;potval2;1070
