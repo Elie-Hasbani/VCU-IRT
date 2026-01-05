@@ -23,10 +23,13 @@ int main()
     CanMessageParser parser("/home/ehasbani/IRT/VCU-IRT/data/DataCan.csv");
 
     vcu.init();
-    vcu.Task10ms();
 
     for (int i = 0; i < 10; ++i)
     {
         CanMessage(&parser);
+        if (i == 4 || i == 8)
+        {
+            vcu.Task10ms();
+        }
     }
 }

@@ -6,21 +6,29 @@
 
 using namespace std;
 
-FileParser *utils::parser;
+// FileParser *utils::parser;
+FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/dataPot.csv");
 
 float utils::GetUserThrottleCommand()
 {
     bool brake = Variables::GetInt(VarIds::BRAKE);
     int direction = Variables::GetInt(VarIds::DIRECTION);
 
+#ifdef TEST
     int v1, v2;
-    parser->readPotVal1(v1);
-    parser->readPotVal2(v2);
+    parser.readPotVal1(v1);
+    parser.readPotVal2(v2);
     std::cout << "potval1 = " << v1 << ", potval2 = " << v2 << endl;
-
-    ////potval are analog values read from the throttle potentiometers
     int pot1val = v1;
     int pot2val = v2;
+#else
+    int pot1val = 0;
+    int pot2val = 0;
+
+#endif
+
+    ////potval are analog values read from the throttle potentiometers
+
     // Variables::SetInt(Variables::pot, pot1val);
     // Variables::SetInt(Variables::pot2, pot2val);
 

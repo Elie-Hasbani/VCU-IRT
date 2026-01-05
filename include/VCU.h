@@ -12,12 +12,13 @@ public:
     void init();
     void Task10ms();
     void receiveCanCallback(uint32_t id, uint32_t data[32], uint8_t length);
-    void AddSignalsToQueue();
 
 private:
-    void init_throttle_test_set_1();
+    void AddSignalsToQueue();
+    void initThrottleValues();
     void addSignalsToMonitor(char *queue, DigSignal **, int count);
     void init_utils();
+    void initParams();
 };
 
 #endif // VCU_H

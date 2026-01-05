@@ -49,31 +49,24 @@ static DigSignal *selectedR2D = &R2D;
 
 #endif
 
-FileParser parser("/home/ehasbani/IRT/VCU-IRT/data/dataPot.csv");
 void VCU::init()
 {
     AddSignalsToQueue();
-
-    Variables::init();
-    init_throttle_test_set_1();
-    init_utils();
+    initThrottleValues();
 }
 
 void VCU::Task10ms()
 {
-    /*cout << "started Task10ms\n";
-    Variables::setInt(SPEED, 5);
-    Variables::setInt(DIRECTION, 1);
+    cout << "-------------Task10ms-----------------\n";
 
-    cout << (Variables::getInt(SPEED)) << "\n";*/
+    Variables::SetInt(VarIds::SPEED, selectedInverter->getMotorSpeed());
+    Variables::SetFloat(VarIds::MOTOR_TEMP, selectedInverter->getMotorTemp());
+    Variables::SetFloat(VarIds::INVERTER_TEMP, selectedInverter->getInvTemp());
+    Variables::SetFloat(VarIds::VOLTAGE, selectedInverter->getVoltatge());
 
-    Variables::SetInt(VarIds::SPEED, 5); // Variables::SetInt(SPEED, 5);
     cout << "test variables class " << Variables::GetInt(VarIds::SPEED) << "\n";
 
-    // Variables::SetFloat(Dire)
-
-    cout << utils::GetUserThrottleCommand() << "\n";
-    cout << utils::GetUserThrottleCommand() << "\n";
+    cout << utils::ProcessThrottle(Variables::GetInt(VarIds::SPEED));
 
     // TODOS
     // update speed for next iteration(get speed form inverter class)
@@ -85,6 +78,8 @@ void VCU::Task10ms()
 
     printf(selectedTSMS->getState() ? "TSMS HIGH\n" : "TSMS LOW\n");
     printf(selectedR2D->getState() ? "R2D HIGH\n" : "R2D LOW\n");
+
+    cout << "-------------Task10ms-----------------\n\n";
 }
 
 void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
@@ -130,17 +125,22 @@ void VCU::addSignalsToMonitor(char *queue, DigSignal **signals, int count)
     }
 }
 
-void VCU::init_utils()
+void VCU::initParams()
 {
-    utils::parser = &parser;
+    Variables::SetFloat(VarIds::THROTRAMP, 3.0f);          // throttle ramp rate(max value increase of thruttle) (%/10ms)
+    Variables::SetFloat(VarIds::THROTRAMPMAX, 5.0f);       // throttle ramp rate at high RPM(max value increase of thruttle at high speed) (%/10ms)
+    Variables::SetInt(VarIds::THROTRAMPRPM, 1000);         // rpm above which to use THROTRAMPMAX
+    Variables::SetFloat(VarIds::MOTOR_TEMP_MAX, 80.0f);    // max motor temperature before limiting throttle(deg C)
+    Variables::SetFloat(VarIds::INVERTER_TEMP_MAX, 85.0f); // max inverter temperature before limiting throttle(deg C)
+    Variables::SetInt(VarIds::POT_MODE, MODE_TWO_POT);     // pot mode: one pot or two pot
 }
 
-void VCU::init_throttle_test_set_1()
+void VCU::initThrottleValues()
 {
-    Throttle::potmin[0] = 100;  // ADC raw min for pedal sensors
-    Throttle::potmin[1] = 100;  // ADC raw min for pedal sensors
-    Throttle::potmax[0] = 3900; // ADC raw max for pedal se
-    Throttle::potmax[1] = 3900; // ADC raw max for pedal se
+    Throttle::potmin[0] = 100;  // ADC raw min for pedal sensor 1
+    Throttle::potmin[1] = 100;  // ADC raw min for pedal sensor 2
+    Throttle::potmax[0] = 3900; // ADC raw max for pedal sensor 1
+    Throttle::potmax[1] = 3900; // ADC raw max for pedal sensor 2
 
     Throttle::regenRpm = 1000.0f;   // Start applying regen above this RPM
     Throttle::regenendRpm = 200.0f; // Regen fades out below this RPM
