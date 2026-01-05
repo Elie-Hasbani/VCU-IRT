@@ -10,8 +10,8 @@ FileParser *utils::parser;
 
 float utils::GetUserThrottleCommand()
 {
-    bool brake = Variables::getInt(BRAKE);
-    int direction = Variables::getInt(DIRECTION);
+    bool brake = Variables::GetInt(VarIds::BRAKE);
+    int direction = Variables::GetInt(VarIds::DIRECTION);
 
     int v1, v2;
     parser->readPotVal1(v1);
@@ -21,8 +21,8 @@ float utils::GetUserThrottleCommand()
     ////potval are analog values read from the throttle potentiometers
     int pot1val = v1;
     int pot2val = v2;
-    // Param::SetInt(Param::pot, pot1val);
-    // Param::SetInt(Param::pot2, pot2val);
+    // Variables::SetInt(Variables::pot, pot1val);
+    // Variables::SetInt(Variables::pot2, pot2val);
 
     bool inRange1 = Throttle::CheckAndLimitRange(&pot1val, 0);
     bool inRange2 = Throttle::CheckAndLimitRange(&pot2val, 1);
@@ -104,28 +104,28 @@ float utils::ProcessThrottle(uint16_t speed)
 {
     float finalSpnt;
 
-    /*if (speed < Param::GetInt(Param::throtramprpm))
+    if (speed < Variables::GetInt(VarIds::THROTRAMPRPM))
     {
-        Throttle::throttleRamp = Param::GetFloat(Param::throtramp);
+        Throttle::throttleRamp = Variables::GetFloat(VarIds::THROTRAMP);
     }
 
     else
     {
-        Throttle::throttleRamp = Param::GetAttrib(Param::throtramp)->max;
-    }*/
+        Throttle::throttleRamp = Variables::GetFloat(VarIds::THROTRAMPMAX);
+    }
 
     finalSpnt = utils::GetUserThrottleCommand();
 
-    // Throttle::UdcLimitCommand(finalSpnt,Param::GetFloat(Param::udc));
-    // Throttle::IdcLimitCommand(finalSpnt, ABS(Param::GetFloat(Param::idc)));
+    // Throttle::UdcLimitCommand(finalSpnt,Variables::GetFloat(Variables::udc));
+    // Throttle::IdcLimitCommand(finalSpnt, ABS(Variables::GetFloat(Variables::idc)));
     Throttle::SpeedLimitCommand(finalSpnt, ABS(speed));
 
-    if (Throttle::TemperatureDerate(Variables::getFloat(INVERTER_TEMP), Variables::getFloat(INVERTER_TEMP_MAX), finalSpnt))
+    if (Throttle::TemperatureDerate(Variables::GetFloat(VarIds::INVERTER_TEMP), Variables::GetFloat(VarIds::INVERTER_TEMP_MAX), finalSpnt))
     {
         cout << "inverter temp high";
     }
 
-    if (Throttle::TemperatureDerate(Variables::getFloat(MOTOR_TEMP), Variables::getFloat(MOTOR_TEMP_MAX), finalSpnt))
+    if (Throttle::TemperatureDerate(Variables::GetFloat(VarIds::MOTOR_TEMP), Variables::GetFloat(VarIds::MOTOR_TEMP_MAX), finalSpnt))
     {
         cout << "motor temp high";
     }
@@ -138,7 +138,7 @@ float utils::ProcessThrottle(uint16_t speed)
     else if (finalSpnt > 100.0f)
         finalSpnt = 100.0f;
 
-    Variables::setFloat(POTNOM, finalSpnt);
+    Variables::SetFloat(VarIds::POTNOM, finalSpnt);
 
     return finalSpnt;
 }

@@ -10,10 +10,10 @@ public:
     void DecodeCanMessage(int id, uint32_t data[2]);
 
 private:
-    int16_t inv_temp;
-    int16_t speed;
-    int16_t voltage;
-    int16_t motor_temp;
+    int32_t inv_temp;
+    int32_t speed;
+    int32_t voltage;
+    int32_t motor_temp;
 };
 
 #endif // guard

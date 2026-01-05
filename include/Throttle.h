@@ -20,6 +20,7 @@ public:
     static void IdcLimitCommand(float &finalSpnt, float idc);
     static void SpeedLimitCommand(float &finalSpnt, int speed);
     static bool TemperatureDerate(float tmp, float tmpMax, float &finalSpnt);
+    float RampThrottle(float potnom);
 
     static int potmin[2];
     static int potmax[2];

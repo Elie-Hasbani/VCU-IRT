@@ -61,11 +61,16 @@ void VCU::init()
 
 void VCU::Task10ms()
 {
-    cout << "started Task10ms\n";
+    /*cout << "started Task10ms\n";
     Variables::setInt(SPEED, 5);
     Variables::setInt(DIRECTION, 1);
 
-    cout << (Variables::getInt(SPEED)) << "\n";
+    cout << (Variables::getInt(SPEED)) << "\n";*/
+
+    Variables::SetInt(VarIds::SPEED, 5); // Variables::SetInt(SPEED, 5);
+    cout << "test variables class " << Variables::GetInt(VarIds::SPEED) << "\n";
+
+    // Variables::SetFloat(Dire)
 
     cout << utils::GetUserThrottleCommand() << "\n";
     cout << utils::GetUserThrottleCommand() << "\n";

@@ -102,8 +102,8 @@ float Throttle::NormalizeThrottle(int potval, int potIdx)
  */
 float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 {
-    int speed = Variables::getInt(SPEED);
-    int dir = Variables::getInt(DIRECTION);
+    int speed = Variables::GetInt(VarIds::SPEED);
+    int dir = Variables::GetInt(VarIds::DIRECTION);
     float potnom = 0.0f; // normalize potval against the potmin and potmax values
 
     if (speed < 0) // make sure speed is not negative
@@ -223,6 +223,52 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
     return potnom;
 }
 
+/**
+ * @brief Apply the throttle ramping parameters for ramping up and down.
+ *
+ * @param potnom Normalized throttle command in percent, range [-100.0, 100.0].
+ * @return float Ramped throttle command in percent, range [-100.0, 100.0].
+ */
+float Throttle::RampThrottle(float potnom)
+{
+    // make sure potnom is within the boundaries of [throtmin, throtmax]
+    potnom = MIN(potnom, throtmax);
+    potnom = MAX(potnom, throtmin);
+
+    if (potnom >= throttleRamped) // higher throttle command than currently applied
+    {
+        if (potnom > 0)
+        {
+            //                    //  current       target,  rate
+            throttleRamped = RAMPUP(throttleRamped, potnom, throttleRamp);
+            potnom = throttleRamped;
+        }
+        else
+        {
+            throttleRamped = RAMPUP(throttleRamped, potnom, regenRamp);
+            potnom = throttleRamped;
+        }
+    }
+    else //(potnom < throttleRamped) // lower throttle command than currently applied
+    {
+        if (potnom >= 0)
+        {
+            throttleRamped = potnom; // No ramping from high throttle to low throttle
+        }
+        else
+        {
+            if (throttleRamped > 0)
+            {
+                throttleRamped = 0;
+            }
+            throttleRamped = RAMPDOWN(throttleRamped, potnom, regenRamp);
+            potnom = throttleRamped;
+        }
+    }
+
+    return potnom;
+}
+
 /*void Throttle::UdcLimitCommand(float& finalSpnt, float udc)
 {
     udcmin = Param::GetFloat(Param::udcmin);//Made dynamic
@@ -326,7 +372,7 @@ void Throttle::SpeedLimitCommand(float &finalSpnt, int speed)
 
 bool Throttle::TemperatureDerate(float temp, float tempMax, float &finalSpnt)
 {
-    uint16_t DerateReason = Variables::getInt(DERATE_REASON);
+    uint16_t DerateReason = Variables::GetInt(VarIds::DERATE_REASON);
     float limit = 0;
 
     if (temp <= tempMax) // temperature low, allow full request
@@ -337,7 +383,7 @@ bool Throttle::TemperatureDerate(float temp, float tempMax, float &finalSpnt)
     {
         limit = 50.0f;
         DerateReason |= 16;
-        Variables::setInt(DERATE_REASON, DerateReason);
+        Variables::SetInt(VarIds::DERATE_REASON, DerateReason);
     } // else temp way too high and limit = 0
 
     if (finalSpnt >= 0)
