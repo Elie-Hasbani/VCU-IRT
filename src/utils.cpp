@@ -130,12 +130,12 @@ float utils::ProcessThrottle(uint16_t speed)
 
     if (Throttle::TemperatureDerate(Variables::GetFloat(VarIds::INVERTER_TEMP), Variables::GetFloat(VarIds::INVERTER_TEMP_MAX), finalSpnt))
     {
-        cout << "inverter temp high";
+        cout << "inverter temp high\n";
     }
 
     if (Throttle::TemperatureDerate(Variables::GetFloat(VarIds::MOTOR_TEMP), Variables::GetFloat(VarIds::MOTOR_TEMP_MAX), finalSpnt))
     {
-        cout << "motor temp high";
+        cout << "motor temp high\n";
     }
 
     // finalSpnt = Throttle::RampThrottle(finalSpnt); //Move ramping as last step -intro V2.30A

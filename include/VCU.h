@@ -10,7 +10,11 @@ class VCU
 {
 public:
     void init();
+    void Task1ms();
     void Task10ms();
+    void Task100ms();
+    void Task200ms();
+
     void receiveCanCallback(uint32_t id, uint32_t data[32], uint8_t length);
 
 private:

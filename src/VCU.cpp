@@ -82,6 +82,21 @@ void VCU::Task10ms()
     cout << "-------------Task10ms-----------------\n\n";
 }
 
+void VCU::Task1ms()
+{
+    DigSigMonitor::checkDigSignals1ms();
+}
+
+void VCU::Task100ms()
+{
+    DigSigMonitor::checkDigSignals100ms();
+}
+
+void VCU::Task200ms()
+{
+    DigSigMonitor::checkDigSignals200ms();
+}
+
 void VCU::receiveCanCallback(uint32_t id, uint32_t data[2], uint8_t length)
 {
     selectedInverter->DecodeCanMessage(id, data);

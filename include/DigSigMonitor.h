@@ -6,8 +6,10 @@
 class DigSigMonitor
 {
 public:
-    static void checkDigSignals1ms();  // to be called periodically
-    static void checkDigSignals10ms(); // to be called periodically
+    static void checkDigSignals1ms();   // to be called periodically
+    static void checkDigSignals10ms();  // to be called periodically
+    static void checkDigSignals100ms(); // to be called periodically
+    static void checkDigSignals200ms(); // to be called periodically
 
     static void add1msSignal(DigSignal *signal)
     {
@@ -26,10 +28,12 @@ public:
     static DigSignal *signals1ms[MAX_1MS_DIG_INPUTS];
     static DigSignal *signals10ms[MAX_10MS_DIG_INPUTS];
     static DigSignal *signals100ms[MAX_100MS_DIG_INPUTS];
+    static DigSignal *signals200ms[MAX_200MS_DIG_INPUTS];
 
     static int size1ms;
     static int size10ms;
     static int size100ms;
+    static int size200ms;
 };
 
 #endif // SIGNAL_PROCESSING_H

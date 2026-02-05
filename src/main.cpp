@@ -27,7 +27,7 @@ int main()
     for (int i = 0; i < 10; ++i)
     {
         CanMessage(&parser);
-        if (i == 4 || i == 8)
+        if (i == 3 || i == 7)
         {
             vcu.Task10ms();
         }
